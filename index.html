@@ -133,7 +133,7 @@ th{color:var(--mu);font-weight:600}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 const SURAH="Al-Fatihah,Al-Baqarah,Ali ‘Imran,An-Nisa’,Al-Ma’idah,Al-An’am,Al-A’raf,Al-Anfal,At-Taubah,Yunus,Hud,Yusuf,Ar-Ra’d,Ibrahim,Al-Hijr,An-Nahl,Al-Isra’,Al-Kahf,Maryam,Ta Ha,Al-Anbiya’,Al-Hajj,Al-Mu’minun,An-Nur,Al-Furqan,Asy-Syu’ara’,An-Naml,Al-Qasas,Al-‘Ankabut,Ar-Rum,Luqman,As-Sajdah,Al-Ahzab,Saba’,Fatir,Ya Sin,As-Saffat,Sad,Az-Zumar,Gafir,Fussilat,Asy-Syura,Az-Zukhruf,Ad-Dukhan,Al-Jasiyah,Al-Ahqaf,Muhammad,Al-Fath,Al-Hujurat,Qaf,Az-Zariyat,At-Tur,An-Najm,Al-Qamar,Ar-Rahman,Al-Waqi’ah,Al-Hadid,Al-Mujadalah,Al-Hasyr,Al-Mumtahanah,As-Saff,Al-Jumu’ah,Al-Munafiqun,At-Tagabun,At-Talaq,At-Tahrim,Al-Mulk,Al-Qalam,Al-Haqqah,Al-Ma’arij,Nuh,Al-Jinn,Al-Muzzammil,Al-Muddassir,Al-Qiyamah,Al-Insan,Al-Mursalat,An-Naba’,An-Nazi’at,‘Abasa,At-Takwir,Al-Infitar,Al-Mutaffifin,Al-Insyiqaq,Al-Buruj,At-Tariq,Al-A’la,Al-Gasyiyah,Al-Fajr,Al-Balad,Asy-Syams,Al-Lail,Ad-Duha,Asy-Syarh,At-Tin,Al-‘Alaq,Al-Qadr,Al-Bayyinah,Az-Zalzalah,Al-‘Adiyat,Al-Qari’ah,At-Takasur,Al-‘Asr,Al-Humazah,Al-Fil,Quraisy,Al-Ma’un,Al-Kausar,Al-Kafirun,An-Nasr,Al-Masad,Al-Ikhlas,Al-Falaq,An-Nas".split(",");
-const KRI=[["kl","Kelancaran hafalan"],["tj","Tajwid"],["mk","Makharijul huruf"],["ad","Adab & kefasihan"]];
+const KRI=[["kl","Kelancaran hafalan"],["tj","Tajwid"],["mk","Makharijul huruf"]];
 const K="ujianQuran.v1";
 let D={p:[],n:[],s:{l:"",a:"",u:"",k:"",c:""}},edit=null;
 try{const r=localStorage.getItem(K);if(r)D=Object.assign(D,JSON.parse(r))}catch(e){}
@@ -200,7 +200,7 @@ function report(){
  if(!p){box.innerHTML='<div class="empty">Pilih peserta untuk melihat laporan.</div>';return}
  const ns=D.n.filter(n=>n.p===p.id).sort((a,b)=>a.s-b.s),S=D.s;
  const vs=ns.map(skor),rt=avg(vs),pr=pred(rt);
- const rows=ns.length?ns.map((n,i)=>`<tr><td class="num">${i+1}</td><td>${n.s+1}. ${SURAH[n.s]}<br><small>${tgl(n.d)}</small></td>${KRI.map(k=>`<td class="num">${n[k[0]]}</td>`).join("")}<td class="num"><b>${vs[i].toFixed(1)}</b></td><td class="num">${pred(vs[i])[0]}</td></tr>${n.c?`<tr><td></td><td colspan="7"><small>Catatan: ${esc(n.c)}</small></td></tr>`:""}`).join(""):'<tr><td colspan="8" class="empty">Peserta ini belum memiliki nilai.</td></tr>';
+ const rows=ns.length?ns.map((n,i)=>`<tr><td class="num">${i+1}</td><td>${n.s+1}. ${SURAH[n.s]}<br><small>${tgl(n.d)}</small></td>${KRI.map(k=>`<td class="num">${n[k[0]]}</td>`).join("")}<td class="num"><b>${vs[i].toFixed(1)}</b></td><td class="num">${pred(vs[i])[0]}</td></tr>${n.c?`<tr><td></td><td colspan="6"><small>Catatan: ${esc(n.c)}</small></td></tr>`:""}`).join(""):'<tr><td colspan="7" class="empty">Peserta ini belum memiliki nilai.</td></tr>';
  box.innerHTML=`<div class="kop"><h2>${esc(S.l||"Laporan Ujian Qur’an")}</h2>${S.a?`<div>${esc(S.a)}</div>`:""}<div style="margin-top:6px"><b>LAPORAN HASIL UJIAN QUR’AN PER SURAH</b></div></div>
  <div class="info"><span>Nama peserta</span><span>: <b>${esc(p.n)}</b></span><span>Kelas / halaqah</span><span>: ${esc(p.k||"-")}</span>${p.i?`<span>No. induk</span><span>: ${esc(p.i)}</span>`:""}<span>Jumlah surah diuji</span><span>: ${ns.length}</span></div>
  <div class="scroll"><table><thead><tr><th class="num">No</th><th>Surah</th>${KRI.map(k=>`<th class="num">${k[1]}</th>`).join("")}<th class="num">Nilai</th><th class="num">Pred.</th></tr></thead><tbody>${rows}</tbody></table></div>
@@ -223,8 +223,8 @@ $('prn').onclick=async()=>{
  d.setFontSize(11);
  [['Nama peserta',p.n],['Kelas / halaqah',p.k||'-'],...(p.i?[['No. induk',p.i]]:[]),['Jumlah surah diuji',String(ns.length)]].forEach(([a,b],i)=>{d.setFont('times','normal');d.text(a,M,y);d.setFont('times',i?'normal':'bold');d.text(': '+b,M+42,y);y+=5.5});
  y+=3;
- const cw=[9,58,20,20,20,20,17,14],cx=[];let a0=M;cw.forEach(w=>{cx.push(a0);a0+=w});
- const head=()=>{d.setFillColor(231,240,235);d.rect(M,y,178,7,'F');d.setFont('times','bold');d.setFontSize(9.5);d.setTextColor(20);['No','Surah','Kelancaran','Tajwid','Makhraj','Adab','Nilai','Pred.'].forEach((t,i)=>{i==1?d.text(t,cx[i]+1,y+4.8):d.text(t,cx[i]+cw[i]/2,y+4.8,{align:'center'})});y+=7};
+ const cw=[9,60,26,26,26,17,14],cx=[];let a0=M;cw.forEach(w=>{cx.push(a0);a0+=w});
+ const head=()=>{d.setFillColor(231,240,235);d.rect(M,y,178,7,'F');d.setFont('times','bold');d.setFontSize(9.5);d.setTextColor(20);['No','Surah','Kelancaran','Tajwid','Makhraj','Nilai','Pred.'].forEach((t,i)=>{i==1?d.text(t,cx[i]+1,y+4.8):d.text(t,cx[i]+cw[i]/2,y+4.8,{align:'center'})});y+=7};
  head();
  if(!ns.length){d.setFont('times','italic');d.setFontSize(10);d.text('Peserta ini belum memiliki nilai.',M+2,y+5);y+=9}
  ns.forEach((n,i)=>{
@@ -236,7 +236,7 @@ $('prn').onclick=async()=>{
   d.setFontSize(8);d.setTextColor(90);d.text(tgl(n.d),cx[1]+1,y+8.5);
   d.setFontSize(10);d.setTextColor(20);
   KRI.forEach((k,j)=>d.text(String(n[k[0]]),cx[2+j]+cw[2+j]/2,y+5,{align:'center'}));
-  d.setFont('times','bold');d.text(vs[i].toFixed(1),cx[6]+cw[6]/2,y+5,{align:'center'});d.text(pred(vs[i])[0],cx[7]+cw[7]/2,y+5,{align:'center'});
+  d.setFont('times','bold');d.text(vs[i].toFixed(1),cx[5]+cw[5]/2,y+5,{align:'center'});d.text(pred(vs[i])[0],cx[6]+cw[6]/2,y+5,{align:'center'});
   if(nt.length){d.setFont('times','italic');d.setFontSize(8.5);d.setTextColor(70);d.text(nt,M+2,y+12.5)}
   y+=h;d.setDrawColor(200);d.setLineWidth(.2);d.line(M,y,W-M,y);
  });
